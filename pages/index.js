@@ -32,9 +32,10 @@ const DynamicComponent = dynamic(() => import(`apps/${process.env.project}`));
 Switch SEO modules based on whether the path name contains "Strapi". 
 Move it here to ensure that meta info is generated in index_mc.html.
 */
+console.log(process.env.project)
 const DynamicSeoComp = dynamic(() =>
 	import(
-		process.env.project.indexOf('Strapi') >= 0
+		(process.env.project.indexOf('Strapi') >= 0 || process.env.project.indexOf('Preview') >= 0)
 			? '@components/Strapi/StrapiSEO'
 			: `apps/${process.env.project}/SEO`
 	)
@@ -338,7 +339,19 @@ export async function getStaticProps(context) {
 			encodeValuesOnly: true // prettify URL
 		}
 	);
-
+	const queryFaq = stringify(
+		{
+			locale: "zh-Hant-HK",
+			populate: '*'
+		},
+		{
+			encodeValuesOnly: true // prettify URL
+		}
+	)
+	const faq = await fetch(`${endpoint}/faq?${queryFaq}`).then((response) => {
+		return response
+	});
+	const faqs = await faq.json();
 	const res = await fetch(`${endpoint}/pages?${query}`).then(
 		(response) => response
 	);
@@ -356,7 +369,11 @@ export async function getStaticProps(context) {
 				Status: 'Open',
 				interests: theme?.issue?.data?.attributes?.name.toLowerCase()
 			},
-			strapi: theme
+			strapi: {
+				...theme,
+				faqs: faqs?.data,
+				demo: true
+			}
 		}
 	};
 }

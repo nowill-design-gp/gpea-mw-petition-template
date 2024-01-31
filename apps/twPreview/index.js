@@ -57,12 +57,18 @@ function Index({ submitted = false, strapi }) {
 				const res = await fetch(
 					`${endpoint}/pages?filters[market][slug]=tw&filters[campaign]=${preview}&populate=deep`
 				).then((response) => response);
+				const faq = await fetch(`${endpoint}/faq?locale=zh-Hant-TW&populate=deep`
+				).then((response) => response);
 				const themes = await res.json();
+				const faqs = await faq.json();
 				const theme = themes?.data[0] ?? {};
-
+				console.log(faqs)
 				dispatch({
 					type: themeActions.SET_STRAPI_DATA,
-					data: theme?.attributes
+					data: {
+						...theme?.attributes,
+						faqs:faqs?.data?.attributes
+					}
 				});
 			}
 		}

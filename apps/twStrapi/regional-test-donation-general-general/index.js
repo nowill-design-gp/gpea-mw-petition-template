@@ -27,6 +27,7 @@ import HeroBanner from '@components/ResponsiveBanner/hero';
 import ThanksBanner from '@components/ResponsiveBanner/thanks';
 import DonationModule from '@components/GP/DonationModule';
 import SignupForm from '@components/GP/TWForm';
+import DonateFAQ from '@components/DonateFAQ';
 // import new layout components
 import MainHeading from '@components/ResponsiveBanner/main-heading';
 // Import Strapi content components
@@ -340,6 +341,21 @@ function Index({ submitted = false, strapi }) {
 													strapi={strapi}
 													variation={variation}
 												/>
+											)}
+										</>
+										<>
+											{pageType?.toLowerCase() === 'donation' && !submitted && (
+												<>
+													<Heading
+														as="p"
+														textAlign="center"
+														py="6"
+														fontSize={{ base: 'xl', md: '2xl' }}
+													>
+														常見問題
+													</Heading>
+													<DonateFAQ locale="TWChinese" />
+												</>
 											)}
 										</>
 									</ContentContainer>
