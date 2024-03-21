@@ -1,11 +1,25 @@
+/**
+ * Deploy setting
+# Project Apps Directory: /apps/{PROJECT}
+PROJECT=hk/lantau-documentary
+MARKET=hk
+PROJECT_NAME=lantau-documentary
+BASEPATH=/web/api.greenpeace.org.hk/htdocs/page/lantau-documentary
+ASSETPREFIX=https://api.greenpeace.org.hk/page/lantau-documentary/
+FTP_CONFIG_NAME=api_hk_cloud 
+# ******** MC Cloud Page Name ********
+CLOUD_PAGE_NAME=Web - Donation Form - HK - Lantau Documentary
+*/
+
 import React, { useState, useEffect, useContext } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+
 import { AppContext } from './context/appContext';
 import AppProvider from './context/appContext';
 import PetitionFooter from '@containers/petitionFooter';
 import Header from './components/Header';
-import StreamingPageHeader from './components/Header/StreamingPageHeader';
+import StreamingPageHeader from './components/Header/streamingPageHeader';
 import SEO from './SEO';
 
 import DonationPage from './components/DonationPage';
@@ -26,7 +40,6 @@ function Index() {
 
 	return (
 		<>
-			<SEO />
 			<AppProvider>
 				<SwitchHeader />
 				<SwitchPage />
@@ -39,7 +52,7 @@ function Index() {
 
 const SwitchHeader = () => {
 	const data = useContext(AppContext);
-	return data.page !== 'streaming' ? <Header /> : <StreamingPageHeader />;
+	return <Header nowPage={data.page} />;
 };
 
 const SwitchPage = () => {
@@ -49,7 +62,7 @@ const SwitchPage = () => {
 		case 'main':
 			return <MainPage />;
 
-		case 'donation':
+		case 'petition':
 			return <DonationPage />;
 
 		case 'streaming':
@@ -59,4 +72,5 @@ const SwitchPage = () => {
 			return <Box minH={'100vh'}></Box>;
 	}
 };
+
 export default Index;

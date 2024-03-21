@@ -1,4 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+/**
+ * Deploy setting
+# Project Apps Directory: /apps/{PROJECT}
+PROJECT=hkStrapi/petition-plastics-dpt-policy
+MARKET=hk
+PROJECT_NAME=petition-plastics-dpt-policy
+BASEPATH=/web/api.greenpeace.org.hk/htdocs/page/petition-plastics-dpt-policy
+ASSETPREFIX=https://api.greenpeace.org.hk/page/petition-plastics-dpt-policy/
+FTP_CONFIG_NAME=api_hk_cloud 
+# ******** MC Cloud Page Name ********
+CLOUD_PAGE_NAME=zh-hk.2022.plastics.dpt_policy.registration.event.na
+*/
+
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as formActions from 'store/actions/action-types/form-actions';
 // Import library
@@ -18,7 +31,9 @@ import SignupForm from '@components/GP/HKForm';
 // Import Strapi content components
 import StrapiSEO from '@components/Strapi/StrapiSEO';
 import StrapiDynamicBlocks from '@components/Strapi/StrapiDynamicContent';
-import StrapiFixedButton from '@components/Strapi/StrapiFixedButton';
+import StrapiFixedButton from '@components/Strapi/StrapiFixedButtonFull';
+// Import helpers
+import { useSignupBtnRootMargin } from '@common/utils'; 
 // Import Contents
 import formContent from './form';
 // Import static
@@ -28,10 +43,21 @@ function Index({ submitted = false, strapi }) {
 	const theme = useSelector((state) => state?.theme);
 	const signup = useSelector((state) => state?.signup);
 	const pageType = strapi?.page_type?.data?.attributes?.name;
-	const [ref, inView] = useInView({
-		threshold: 0
-	});
+
 	const FormRef = useRef(null);
+
+	const [signupBtnRef, setSignupBtnRef] = useState(null);
+	const signupBtnRootMargin = useSignupBtnRootMargin(FormRef, signupBtnRef);
+
+	const [ref, inView] = useInView({
+		threshold: 0,
+		rootMargin: signupBtnRootMargin,
+	});
+	// mobile sticky btn show ref
+	const [FormBtnref, btnInView] = useInView({
+		threshold: 0,
+		rootMargin: '-70px 0px 120px 0px'
+	});
 
 	submitted = useSelector((state) => state?.status?.submitted);
 
@@ -122,7 +148,12 @@ function Index({ submitted = false, strapi }) {
 								<>
 									{pageType?.toLowerCase() === 'donation' && !submitted && (
 										<>
-											<Heading textAlign="center" py="6" fontSize="2xl">
+											<Heading
+												as="p"
+												textAlign="center"
+												py="6"
+												fontSize={{ base: 'xl', md: '2xl' }}
+											>
 												常見問題
 											</Heading>
 											<DonateFAQ locale="HKChinese" />
@@ -146,20 +177,25 @@ function Index({ submitted = false, strapi }) {
 												theme?.params?.donation_module_campaign ??
 												strapi?.donationModuleCampaign
 											}
-											campaignId={theme?.params?.campaignId ?? ''}
+											campaignId={
+												theme?.params?.campaignId ??
+												strapi?.donationModuleCampaignId ??
+												''
+											}
 											env={strapi?.donationModuleEnv}
 										/>
 									) : (
-										<SignupForm />
+										<SignupForm setSignupBtnRef={ setSignupBtnRef } />
 									)}
 								</Box>
-							</FormContainer>
+									<div ref={ FormBtnref }></div>
+								</FormContainer>
 						</Box>
 					</Flex>
 				</OverflowWrapper>
 			</PageContainer>
 			<PetitionFooter locale={'HKChinese'} />
-			<StrapiFixedButton target={FormRef} targetInView={inView} />
+			<StrapiFixedButton target={FormRef} targetInView={ (pageType?.toLowerCase() === 'donation' || submitted) ? btnInView : inView} />
 		</>
 	);
 }

@@ -14,7 +14,7 @@ import PetitionFooter from '@containers/petitionFooter';
 import HeroBanner from '@components/ResponsiveBanner/hero';
 import ThanksBanner from '@components/ResponsiveBanner/thanks';
 import DonationModule from '@components/GP/DonationModule';
-import SignupForm from '@components/GP/HKForm';
+import SignupForm from '@components/GP/HKCustomForm';
 // Import Strapi content components
 import StrapiSEO from '@components/Strapi/StrapiSEO';
 import StrapiDynamicBlocks from '@components/Strapi/StrapiDynamicContent';
@@ -47,6 +47,7 @@ function Index({ submitted = false, strapi }) {
 					if (pageType?.toLowerCase() === 'donation') {
 						return (
 							<HeroBanner
+								removeMask={strapi?.contentHero?.removeMask}
 								defaultImage={
 									theme?.params?.hero_image_desktop ||
 									strapi?.contentHero?.desktopImageURL
@@ -78,6 +79,7 @@ function Index({ submitted = false, strapi }) {
 					} else {
 						return submitted ? (
 							<ThanksBanner
+								removeMask={strapi?.thankyouHero?.removeMask}
 								defaultImage={
 									theme?.params?.hero_image_desktop ||
 									strapi?.thankyouHero?.desktopImageURL
@@ -87,13 +89,13 @@ function Index({ submitted = false, strapi }) {
 										media: '(min-width: 48em)',
 										srcset:
 											theme?.params?.hero_image_desktop ||
-											strapi?.contentHero?.desktopImageURL
+											strapi?.thankyouHero?.desktopImageURL
 									},
 									{
 										media: '',
 										srcset:
 											theme?.params?.hero_image_mobile ||
-											strapi?.contentHero?.mobileImageURL
+											strapi?.thankyouHero?.mobileImageURL
 									}
 								]}
 								content={{
@@ -103,6 +105,7 @@ function Index({ submitted = false, strapi }) {
 							/>
 						) : (
 							<HeroBanner
+								removeMask={strapi?.contentHero?.removeMask}
 								defaultImage={
 									theme?.params?.hero_image_desktop ||
 									strapi?.contentHero?.desktopImageURL
@@ -155,7 +158,12 @@ function Index({ submitted = false, strapi }) {
 								<>
 									{pageType?.toLowerCase() === 'donation' && !submitted && (
 										<>
-											<Heading textAlign="center" py="6" fontSize="2xl">
+											<Heading
+												as="p"
+												textAlign="center"
+												py="6"
+												fontSize={{ base: 'xl', md: '2xl' }}
+											>
 												常見問題
 											</Heading>
 											<DonateFAQ locale="HKChinese" />
@@ -179,7 +187,11 @@ function Index({ submitted = false, strapi }) {
 												theme?.params?.donation_module_campaign ??
 												strapi?.donationModuleCampaign
 											}
-											campaignId={theme?.params?.campaignId ?? ''}
+											campaignId={
+												theme?.params?.campaignId ??
+												strapi?.donationModuleCampaignId ??
+												''
+											}
 											env={strapi?.donationModuleEnv}
 										/>
 									) : (

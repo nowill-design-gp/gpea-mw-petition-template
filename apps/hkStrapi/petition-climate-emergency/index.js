@@ -1,4 +1,16 @@
-import React, { useEffect, useRef } from 'react';
+/**
+Deploy Setting:
+PROJECT=hkStrapi/petition-climate-emergency
+MARKET=hk
+PROJECT_NAME=petition-climate-emergency
+BASEPATH=/web/api.greenpeace.org.hk/htdocs/2022/petition-climate-emergency
+ASSETPREFIX=https://api.greenpeace.org.hk/2022/petition-climate-emergency/
+FTP_CONFIG_NAME=api_hk_cloud
+# ******** MC Cloud Page Name ********
+CLOUD_PAGE_NAME=zh-hk.2022.climate.climate_emergency.general.signup.na
+*/
+
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as formActions from 'store/actions/action-types/form-actions';
 // Import library
@@ -18,7 +30,9 @@ import SignupForm from '@components/GP/HKForm';
 // Import Strapi content components
 import StrapiSEO from '@components/Strapi/StrapiSEO';
 import StrapiDynamicBlocks from '@components/Strapi/StrapiDynamicContent';
-import StrapiFixedButton from '@components/Strapi/StrapiFixedButton';
+import StrapiFixedButton from '@components/Strapi/StrapiFixedButtonFull';
+// Import helpers
+import { useSignupBtnRootMargin } from '@common/utils';
 // Import Contents
 import formContent from './form';
 // Import static
@@ -28,11 +42,21 @@ function Index({ submitted = false, strapi }) {
 	const theme = useSelector((state) => state?.theme);
 	const signup = useSelector((state) => state?.signup);
 	const pageType = strapi?.page_type?.data?.attributes?.name;
-	const [ref, inView] = useInView({
-		threshold: 0
-	});
+
 	const FormRef = useRef(null);
 
+	const [signupBtnRef, setSignupBtnRef] = useState(null);
+	const signupBtnRootMargin = useSignupBtnRootMargin(FormRef, signupBtnRef);
+
+	const [ref, inView] = useInView({
+		threshold: 0,
+		rootMargin: signupBtnRootMargin
+	});
+	// mobile sticky btn show ref
+	const [FormBtnref, btnInView] = useInView({
+		threshold: 0,
+		rootMargin: '-70px 0px 120px 0px'
+	});
 	submitted = useSelector((state) => state?.status?.submitted);
 
 	useEffect(() => {
@@ -47,6 +71,7 @@ function Index({ submitted = false, strapi }) {
 					if (pageType?.toLowerCase() === 'donation') {
 						return (
 							<HeroBanner
+								removeMask={strapi?.contentHero?.removeMask}
 								defaultImage={
 									theme?.params?.hero_image_desktop ||
 									strapi?.contentHero?.desktopImageURL
@@ -78,6 +103,7 @@ function Index({ submitted = false, strapi }) {
 					} else {
 						return submitted ? (
 							<ThanksBanner
+								removeMask={strapi?.thankyouHero?.removeMask}
 								defaultImage={
 									theme?.params?.hero_image_desktop ||
 									strapi?.thankyouHero?.desktopImageURL
@@ -87,13 +113,13 @@ function Index({ submitted = false, strapi }) {
 										media: '(min-width: 48em)',
 										srcset:
 											theme?.params?.hero_image_desktop ||
-											strapi?.contentHero?.desktopImageURL
+											strapi?.thankyouHero?.desktopImageURL
 									},
 									{
 										media: '',
 										srcset:
 											theme?.params?.hero_image_mobile ||
-											strapi?.contentHero?.mobileImageURL
+											strapi?.thankyouHero?.mobileImageURL
 									}
 								]}
 								content={{
@@ -103,6 +129,7 @@ function Index({ submitted = false, strapi }) {
 							/>
 						) : (
 							<HeroBanner
+								removeMask={strapi?.contentHero?.removeMask}
 								defaultImage={
 									theme?.params?.hero_image_desktop ||
 									strapi?.contentHero?.desktopImageURL
@@ -155,7 +182,12 @@ function Index({ submitted = false, strapi }) {
 								<>
 									{pageType?.toLowerCase() === 'donation' && !submitted && (
 										<>
-											<Heading textAlign="center" py="6" fontSize="2xl">
+											<Heading
+												as="p"
+												textAlign="center"
+												py="6"
+												fontSize={{ base: 'xl', md: '2xl' }}
+											>
 												常見問題
 											</Heading>
 											<DonateFAQ locale="HKChinese" />
@@ -179,20 +211,32 @@ function Index({ submitted = false, strapi }) {
 												theme?.params?.donation_module_campaign ??
 												strapi?.donationModuleCampaign
 											}
-											campaignId={theme?.params?.campaignId ?? ''}
+											campaignId={
+												theme?.params?.campaignId ??
+												strapi?.donationModuleCampaignId ??
+												''
+											}
 											env={strapi?.donationModuleEnv}
 										/>
 									) : (
-										<SignupForm />
+										<SignupForm setSignupBtnRef={setSignupBtnRef} />
 									)}
 								</Box>
+								<div ref={FormBtnref}></div>
 							</FormContainer>
 						</Box>
 					</Flex>
 				</OverflowWrapper>
 			</PageContainer>
 			<PetitionFooter locale={'HKChinese'} />
-			<StrapiFixedButton target={FormRef} targetInView={inView} />
+			<StrapiFixedButton
+				target={FormRef}
+				targetInView={
+					pageType?.toLowerCase() === 'donation' || submitted
+						? btnInView
+						: inView
+				}
+			/>
 		</>
 	);
 }

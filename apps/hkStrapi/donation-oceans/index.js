@@ -1,3 +1,16 @@
+/**
+ * Deploy setting
+# Project Apps Directory: /apps/{PROJECT}
+PROJECT=hkStrapi/donation-oceans
+MARKET=hk
+PROJECT_NAME=donation-oceans
+BASEPATH=/web/api.greenpeace.org.hk/htdocs/page/donation-oceans
+ASSETPREFIX=https://api.greenpeace.org.hk/page/donation-oceans/
+FTP_CONFIG_NAME=api_hk_cloud 
+# ******** MC Cloud Page Name ********
+CLOUD_PAGE_NAME=donation-oceans
+*/
+
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as formActions from 'store/actions/action-types/form-actions';
@@ -19,7 +32,7 @@ import DonateFAQ from '@components/DonateFAQ';
 // Import Strapi content components
 import StrapiSEO from '@components/Strapi/StrapiSEO';
 import StrapiDynamicBlocks from '@components/Strapi/StrapiDynamicContent';
-import StrapiFixedButton from '@components/Strapi/StrapiFixedButton';
+import StrapiFixedButton from '@components/Strapi/StrapiFixedButtonFull';
 // Import Contents
 import formContent from './form';
 // Import static
@@ -32,6 +45,12 @@ function Index({ submitted = false, strapi }) {
 	const [ref, inView] = useInView({
 		threshold: 0
 	});
+	// mobile sticky btn show ref
+	const [FormBtnref, btnInView] = useInView({
+		threshold: 0,
+		rootMargin: '-70px 0px 120px 0px'
+	});
+
 	const FormRef = useRef(null);
 
 	submitted = useSelector((state) => state?.status?.submitted);
@@ -43,65 +62,6 @@ function Index({ submitted = false, strapi }) {
 	return (
 		<>
 			<StrapiSEO strapi={strapi} />
-			<Box>
-				{submitted ? (
-					<ThanksBanner
-						removeMask={strapi?.thankyouHero?.removeMask}
-						defaultImage={
-							theme?.params?.hero_image_desktop ||
-							strapi?.thankyouHero?.desktopImageURL
-						}
-						imageSrcset={[
-							{
-								media: '(min-width: 48em)',
-								srcset:
-									theme?.params?.hero_image_desktop ||
-									strapi?.thankyouHero?.desktopImageURL
-							},
-							{
-								media: '',
-								srcset:
-									theme?.params?.hero_image_mobile ||
-									strapi?.thankyouHero?.mobileImageURL
-							}
-						]}
-						content={{
-							title: strapi?.thankyouHero?.richContent,
-							description: strapi?.thankyouHero?.richContentParagraph
-						}}
-					/>
-				) : (
-					<HeroBanner
-						removeMask={strapi?.contentHero?.removeMask}
-						defaultImage={
-							theme?.params?.hero_image_desktop ||
-							strapi?.contentHero?.desktopImageURL
-						}
-						imageSrcset={[
-							{
-								media: '(min-width: 48em)',
-								srcset:
-									theme?.params?.hero_image_desktop ||
-									strapi?.contentHero?.desktopImageURL
-							},
-							{
-								media: '',
-								srcset:
-									theme?.params?.hero_image_mobile ||
-									strapi?.contentHero?.mobileImageURL
-							}
-						]}
-						content={{
-							title: theme?.params?.headline_prefix
-								? theme?.params?.headline_prefix +
-								  '<br/>' +
-								  strapi?.contentHero?.richContent
-								: strapi?.contentHero?.richContent,
-							description: strapi?.contentHero?.richContentParagraph
-						}}
-					/>
-				)}
-			</Box>
 			<Box>
 				{submitted ? (
 					<ThanksBanner
@@ -182,7 +142,12 @@ function Index({ submitted = false, strapi }) {
 								<>
 									{pageType?.toLowerCase() === 'donation' && !submitted && (
 										<>
-											<Heading textAlign="center" py="6" fontSize="2xl">
+											<Heading
+												as="p"
+												textAlign="center"
+												py="6"
+												fontSize={{ base: 'xl', md: '2xl' }}
+											>
 												常見問題
 											</Heading>
 											<DonateFAQ locale="HKChinese" />
@@ -206,20 +171,25 @@ function Index({ submitted = false, strapi }) {
 												theme?.params?.donation_module_campaign ??
 												strapi?.donationModuleCampaign
 											}
-											campaignId={theme?.params?.campaignId ?? ''}
+											campaignId={
+												theme?.params?.campaignId ??
+												strapi?.donationModuleCampaignId ??
+												''
+											}
 											env={strapi?.donationModuleEnv}
 										/>
 									) : (
 										<SignupForm />
 									)}
 								</Box>
+								<div ref={ FormBtnref }></div>
 							</FormContainer>
 						</Box>
 					</Flex>
 				</OverflowWrapper>
 			</PageContainer>
 			<PetitionFooter locale={'HKChinese'} />
-			<StrapiFixedButton target={FormRef} targetInView={inView} />
+			<StrapiFixedButton target={FormRef} targetInView={ btnInView } />
 		</>
 	);
 }

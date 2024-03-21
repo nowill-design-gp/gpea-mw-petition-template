@@ -1,3 +1,15 @@
+/**
+ * Deploy setting
+# Project Apps Directory: /apps/{PROJECT}
+PROJECT=hkStrapi/event-plastics-plasticfree_harbour_art_submission
+MARKET=hk
+PROJECT_NAME=event-plastics-plasticfree_harbour_art_submission
+BASEPATH=/web/api.greenpeace.org.hk/htdocs/page/event-plastics-plasticfree_harbour_art_submission
+ASSETPREFIX=https://api.greenpeace.org.hk/page/event-plastics-plasticfree_harbour_art_submission/
+FTP_CONFIG_NAME=api_hk_cloud 
+# ******** MC Cloud Page Name ********
+CLOUD_PAGE_NAME=event-plastics-plasticfree_harbour_art_submission
+*/
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as formActions from 'store/actions/action-types/form-actions';
@@ -18,7 +30,7 @@ import SignupForm from './eventForm';
 // Import Strapi content components
 import StrapiSEO from '@components/Strapi/StrapiSEO';
 import StrapiDynamicBlocks from '@components/Strapi/StrapiDynamicContent';
-import StrapiFixedButton from '@components/Strapi/StrapiFixedButton';
+import StrapiFixedButton from '@components/Strapi/StrapiFixedButtonFull';
 // Import Contents
 import formContent from './form';
 // Import static
@@ -29,8 +41,15 @@ function Index({ submitted = false, strapi }) {
 	const signup = useSelector((state) => state?.signup);
 	const pageType = strapi?.page_type?.data?.attributes?.name;
 	const [ref, inView] = useInView({
-		threshold: 0
+		threshold: 0,
+		rootMargin: '-24px 0px 80px 0px'
 	});
+	// mobile sticky btn show ref
+	const [FormBtnref, btnInView] = useInView({
+		threshold: 0,
+		rootMargin: '-70px 0px 120px 0px'
+	});
+
 	const FormRef = useRef(null);
 
 	submitted = useSelector((state) => state?.status?.submitted);
@@ -47,6 +66,7 @@ function Index({ submitted = false, strapi }) {
 					if (pageType?.toLowerCase() === 'donation') {
 						return (
 							<HeroBanner
+								removeMask={strapi?.contentHero?.removeMask}
 								defaultImage={
 									theme?.params?.hero_image_desktop ||
 									strapi?.contentHero?.desktopImageURL
@@ -78,6 +98,7 @@ function Index({ submitted = false, strapi }) {
 					} else {
 						return submitted ? (
 							<ThanksBanner
+								removeMask={strapi?.thankyouHero?.removeMask}
 								defaultImage={
 									theme?.params?.hero_image_desktop ||
 									strapi?.thankyouHero?.desktopImageURL
@@ -87,13 +108,13 @@ function Index({ submitted = false, strapi }) {
 										media: '(min-width: 48em)',
 										srcset:
 											theme?.params?.hero_image_desktop ||
-											strapi?.contentHero?.desktopImageURL
+											strapi?.thankyouHero?.desktopImageURL
 									},
 									{
 										media: '',
 										srcset:
 											theme?.params?.hero_image_mobile ||
-											strapi?.contentHero?.mobileImageURL
+											strapi?.thankyouHero?.mobileImageURL
 									}
 								]}
 								content={{
@@ -103,6 +124,7 @@ function Index({ submitted = false, strapi }) {
 							/>
 						) : (
 							<HeroBanner
+								removeMask={strapi?.contentHero?.removeMask}
 								defaultImage={
 									theme?.params?.hero_image_desktop ||
 									strapi?.contentHero?.desktopImageURL
@@ -155,7 +177,12 @@ function Index({ submitted = false, strapi }) {
 								<>
 									{pageType?.toLowerCase() === 'donation' && !submitted && (
 										<>
-											<Heading textAlign="center" py="6" fontSize="2xl">
+											<Heading
+												as="p"
+												textAlign="center"
+												py="6"
+												fontSize={{ base: 'xl', md: '2xl' }}
+											>
 												常見問題
 											</Heading>
 											<DonateFAQ locale="HKChinese" />
@@ -169,13 +196,21 @@ function Index({ submitted = false, strapi }) {
 								<Box ref={ref}>
 									<SignupForm />
 								</Box>
+								<div ref={FormBtnref}></div>
 							</FormContainer>
 						</Box>
 					</Flex>
 				</OverflowWrapper>
 			</PageContainer>
 			<PetitionFooter locale={'HKChinese'} />
-			<StrapiFixedButton target={FormRef} targetInView={inView} />
+			<StrapiFixedButton
+				target={FormRef}
+				targetInView={
+					pageType?.toLowerCase() === 'donation' || submitted
+						? btnInView
+						: inView
+				}
+			/>
 		</>
 	);
 }
