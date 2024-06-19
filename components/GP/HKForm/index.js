@@ -412,7 +412,7 @@ const MyEnhancedForm = withFormik({
 		const { formContent, CustomRules } = props;
 		return validation(values, formContent, CustomRules);
 	},
-
+	
 	handleSubmit: async (values, { setSubmitting, props }) => {
 		const { submitForm, theme, hiddenFormData, strapi } = props;
 		const isProd = process.env.NODE_ENV === 'production';
@@ -421,7 +421,7 @@ const MyEnhancedForm = withFormik({
 			capitalize(strapi?.issue?.data?.attributes?.slug) ??
 			capitalize(theme.interests)
 		}`;
-
+		console.log('values', values);
 		const { dummyEndpointURL, websignEndpointURL } =
 			strapi?.market?.data?.attributes;
 

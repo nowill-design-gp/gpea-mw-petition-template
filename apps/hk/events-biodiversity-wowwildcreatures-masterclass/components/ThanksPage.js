@@ -3,7 +3,7 @@ import { Box, Image } from '@chakra-ui/react';
 
 import DonationModule from '@components/GP/DonationModule';
 
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import formContent from '../form';
 import * as formActions from 'store/actions/action-types/form-actions';
 import * as signupActions from 'store/actions/action-types/signup-actions';
@@ -21,6 +21,12 @@ function ThanksPage({ status, setFormContent, theme, resetSubmitted }) {
 	const signupSection = useRef(null);
 	const router = useRouter();
 	const { p, ep, s } = router.query;
+
+	// get utm_source
+	const hiddenForm = useSelector((state) => state?.hiddenForm);
+	const { utm_source } = hiddenForm?.data;
+	console.log('utm_source', utm_source);
+
 	useEffect(() => {
 		setFormContent(formContent);
 		resetSubmitted();
@@ -127,6 +133,7 @@ function ThanksPage({ status, setFormContent, theme, resetSubmitted }) {
 							</Box>
 						</div>
 						<Box className="relative w-[100%] flex-1" ref={signupSection}>
+						{utm_source !== 'dd' && (
 							<Box
 								className="md:sticky md:top-[70px]"
 								maxW="500px"
@@ -136,6 +143,7 @@ function ThanksPage({ status, setFormContent, theme, resetSubmitted }) {
 								boxShadow="lg"
 								overflow="hidden"
 							>
+								
 								<DonationModule
 									market={'HK'}
 									language={'zh_HK'}
@@ -144,6 +152,7 @@ function ThanksPage({ status, setFormContent, theme, resetSubmitted }) {
 									env={'production'}
 								/>
 							</Box>
+						)}
 						</Box>
 					</div>
 				</div>

@@ -13,7 +13,7 @@ import {
 	useMediaQuery,
 	Slide
 } from '@chakra-ui/react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import NextImage from 'next/image';
 import { useRouter } from 'next/router';
 import { AppContext } from '../context/appContext';
@@ -49,6 +49,10 @@ function MainPage({ status, theme, setFormContent, signup }) {
 	const router = useRouter();
 	const { p, ep, s } = router.query;
 
+	// get utm_source
+	const hiddenForm = useSelector((state) => state?.hiddenForm);
+	const { utm_source } = hiddenForm?.data;
+
 	const [signupBtnRef, setSignupBtnRef] = useState(null);
 
 	const visionSection = useRef(null);
@@ -59,7 +63,7 @@ function MainPage({ status, theme, setFormContent, signup }) {
 	const ourWorkSection = useRef(null);
 
 	const RenderForm = useCallback(() => {
-		return value.isLoggedIn ? (
+		return value.isLoggedIn ? utm_source !== 'dd' && (
 			<DonationModule
 				market={'HK'}
 				language={'zh_HK'}

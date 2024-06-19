@@ -1,14 +1,14 @@
 /**
  * Deploy setting
 # Project Apps Directory: /apps/{PROJECT}
-PROJECT=hk/lantau-documentary
+PROJECT=hk/events-biodiversity-wowwildcreatures-masterclass
 MARKET=hk
-PROJECT_NAME=lantau-documentary
-BASEPATH=/web/api.greenpeace.org.hk/htdocs/page/lantau-documentary
-ASSETPREFIX=https://api.greenpeace.org.hk/page/lantau-documentary/
+PROJECT_NAME=events-biodiversity-wowwildcreatures-masterclass
+BASEPATH=/web/api.greenpeace.org.hk/htdocs/page/events-biodiversity-wowwildcreatures-masterclass
+ASSETPREFIX=https://api.greenpeace.org.hk/page/events-biodiversity-wowwildcreatures-masterclass/
 FTP_CONFIG_NAME=api_hk_cloud 
 # ******** MC Cloud Page Name ********
-CLOUD_PAGE_NAME=Web - Donation Form - HK - Lantau Documentary
+CLOUD_PAGE_NAME=events-biodiversity-wowwildcreatures-masterclass
 */
 
 import React, { useState, useEffect, useContext } from 'react';
@@ -29,6 +29,8 @@ import VideoPage from './components/VideoPage';
 function Index() {
 	const router = useRouter();
 	const [language, setLanguage] = useState('zh_HK');
+
+	
 
 	useEffect(() => {
 		const { language } = router.query;
