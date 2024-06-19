@@ -16,7 +16,8 @@ const nextConfig = {
     donateModule: process.env.DONATE_MODULE,
     timeStamp: String(Date.now()),
     dummyEndpoint: `https://cors-anywhere.small-service.gpeastasia.org/https://cloud.green${process.env.MARKET}.greenpeace.org/websign-dummy`,
-    convExp: process.env.MARKET == 'tw' ? process.env.TW_CONV_EXP : process.env.HK_CONV_EXP
+    convExp: process.env.MARKET == 'tw' ? process.env.TW_CONV_EXP : process.env.HK_CONV_EXP,
+    webEventHistoryEndpoint: process.env.MARKET == 'tw' ? process.env.TW_WEB_EVENT_ENDPOINT : process.env.HK_WEB_EVENT_ENDPOINT,
   },
   // Use the CDN in production and localhost for development.
   assetPrefix: isProd ? process.env.ASSETPREFIX : '',
