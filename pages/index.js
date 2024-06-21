@@ -330,7 +330,11 @@ export async function getStaticProps(context) {
 				market: { populate: { filters: { name: { $neq: 'pages' } } } },
 				page_type: { populate: { filters: { name: { $neq: 'pages' } } } },
 				seo: { populate: '*' },
-				thankyouBlocks: { populate: '*' },
+				thankyouBlocks: { populate: [
+					'CardSlider.image',
+					'TestimonialSlider.avatar',
+					'CarouselSlider.image'
+				] },
 				thankyouHero: { populate: '*' }
 			}
 		},
