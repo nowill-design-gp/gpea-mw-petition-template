@@ -263,6 +263,7 @@ function Index({ submitted = false, strapi }) {
 														''
 													}
 													env={strapi?.donationModuleEnv}
+													customUrl={'https://change.greenpeace.org.tw/2025/test/hubspot-hcaptcha-alert-tw-hk-kr/main.js'}
 												/>
 											)
 										) : (

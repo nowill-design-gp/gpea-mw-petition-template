@@ -4,7 +4,7 @@ export function validation(values, formContent, customRules) {
 	if (!values.Email) {
 		errors.Email = formContent.empty_data_alert;
 	} else if (
-		!/^(?!.*(?:''|\.\.))[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(
+		!/^[a-zA-Z0-9!#$%&'*+\/=?^_{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\/=?^_{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/.test(
 			values.Email
 		)
 	) {

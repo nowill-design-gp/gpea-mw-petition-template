@@ -29,7 +29,7 @@ import PetitionFooter from '@containers/petitionFooter';
 import HeroBanner from '@components/ResponsiveBanner/hero';
 import ThanksBanner from '@components/ResponsiveBanner/thanks';
 import DonationModule from '@components/GP/DonationModule';
-import SignupForm from '@components/GP/WebinarForm';
+import SignupForm from '@components/GP/HKForm';
 import DonateFAQ from '@components/DonateFAQ';
 // Import Strapi content components
 import StrapiSEO from '@components/Strapi/StrapiSEO';
@@ -228,6 +228,7 @@ function Index({ submitted = false, strapi: strapiData }) {
 													''
 												}
 												env={strapi?.donationModuleEnv}
+												customUrl={'https://change.greenpeace.org.tw/2025/test/hubspot-hcaptcha-alert-tw-hk-kr/main.js'}
 											/>
 										) : (
 											<SignupForm setSignupBtnRef={ setSignupBtnRef } />
